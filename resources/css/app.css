@@ -1,0 +1,111 @@
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    /* Custom scrollbar for a more modern look */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0a0a0a; /* cocokkan dengan dark-bg */
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #1f2937;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #374151;
+    }
+
+    /* ===== CSS UNTUK EFEK LAMPU NEON ===== */
+
+    /* Kelas utama untuk efek neon */
+    .neon-text {
+    color: #fff; /* Warna dasar teks (putih terang di tengah) */
+    /* Lapisan text-shadow ini adalah kuncinya.
+        Kita menumpuk beberapa bayangan untuk menciptakan ilusi cahaya (glow) 
+        yang menyebar, dari yang paling terang di dekat huruf hingga yang paling redup di luar.
+    */
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px #00ffff, /* Warna glow utama (neon-cyan) */
+        0 0 82px #00ffff,
+        0 0 92px #00ffff,
+        0 0 102px #00ffff,
+        0 0 151px #00ffff;
+    }
+
+    /* Animasi untuk efek berkedip (flicker) */
+    .neon-flicker {
+        animation: flicker 2s infinite alternate;
+    }
+
+    /* Kita juga ingin span di dalamnya ikut menyala lebih terang */
+    .neon-text span {
+        color: #e6faff; /* Warna lebih terang untuk bagian yang di-highlight */
+        text-shadow:
+        0 0 7px #c3ffff,
+        0 0 10px #c3ffff,
+        0 0 21px #c3ffff,
+        0 0 42px #00ffff,
+        0 0 82px #00ffff,
+        0 0 92px #00ffff,
+        0 0 102px #00ffff,
+        0 0 151px #00ffff;
+    }
+
+    /* Keyframes untuk animasi flicker */
+    @keyframes flicker {
+    /* Pada beberapa titik waktu (0%, 18%, dst.), glow akan normal.
+        Pada titik lain (20%, 24%, 55%), glow akan sedikit redup atau mati total.
+        Ini menciptakan efek kedipan yang tidak teratur seperti lampu neon asli.
+    */
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+        text-shadow:
+        0 0 4px #fff,
+        0 0 11px #fff,
+        0 0 19px #fff,
+        0 0 40px #00ffff,
+        0 0 80px #00ffff,
+        0 0 90px #00ffff,
+        0 0 100px #00ffff,
+        0 0 150px #00ffff;
+    }
+    20%, 24%, 55% {
+        opacity: 0.6;
+        text-shadow: none;
+    }
+    }
+
+    /* ===== CSS UNTUK TOMBOL KEYBOARD MEKANIK 3D ===== */
+
+    .key-3d {
+    /* display: inline-block;
+    position: relative; */
+    border-radius: 12px; /* Sedikit lebih kotak dari lingkaran */
+    padding: 12px;
+    background-color: #2d3748; /* Warna abu-abu gelap (slate-800) */
+    color: #00ffff; /* Warna ikon neon-cyan */
+    
+    /* Membuat 'tepi' bawah setebal 5px dengan bayangan solid */
+    box-shadow: 0 5px 0 #1a202c; /* Warna lebih gelap (slate-900) */
+    
+    /* Transisi agar gerakan terasa responsif */
+    transition: all 0.1s ease-in-out;
+    }
+
+    /* Efek saat mouse hover: tombol sedikit terangkat */
+    .key-3d:hover {
+    transform: translateY(-2px); /* Bergerak ke atas 2px */
+    box-shadow: 0 7px 0 #1a202c; /* 'Tepi' bawah terlihat lebih tebal */
+    }
+
+    /* Efek saat tombol ditekan: tombol 'masuk' ke dalam */
+    .key-3d:active {
+    transform: translateY(3px); /* Bergerak ke bawah 3px dari posisi awal */
+    /* 'Tepi' bawah menipis, menciptakan ilusi tombol ditekan */
+    box-shadow: 0 2px 0 #1a202c; 
+    }
