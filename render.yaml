@@ -1,12 +1,20 @@
-# Blueprint untuk deploy aplikasi Laravel di Render
+# Blueprint versi 2 - Struktur yang Benar untuk Laravel + Database
+databases:
+  # Mendefinisikan service database kita terlebih dahulu
+  - name: portfolio-db       # Nama database Anda
+    databaseName: portfolio  # Nama database spesifik yang akan dibuat
+    user: portfolio_user     # Username untuk database
+    plan: free               # Menggunakan paket gratis
+    postgresMajorVersion: 15 # Menggunakan PostgreSQL versi 15
+
 services:
-  # 1. Web Service untuk Aplikasi Laravel
+  # Mendefinisikan web service untuk aplikasi Laravel
   - type: web
-    name: portfolio-web   # Anda bisa ganti nama ini
-    env: php              # Tentukan environment sebagai PHP
-    plan: free            # Menggunakan paket gratis
+    name: portfolio-web      # Nama web service Anda
+    env: php                 # Environment PHP
+    plan: free               # Paket gratis
     
-    # Perintah yang dijalankan saat proses build
+    # Perintah yang dijalankan saat build
     buildCommand: |
       composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
       npm install
@@ -22,16 +30,34 @@ services:
 
     # Environment Variables
     envVars:
-      - key: APP_URL # Ganti dengan URL Anda setelah deploy pertama berhasil
-        value: https://portfolio-web.onrender.com 
+      - key: APP_URL
+        # Render akan memberikan URL-nya secara otomatis
+        fromService:
+          type: web
+          name: portfolio-web
+          property: url
       - key: APP_KEY
-        generateValue: true # Biarkan Render yang membuat APP_KEY baru yang aman
+        generateValue: true # Biarkan Render membuat APP_KEY baru yang aman
       - key: DB_CONNECTION
+        value: pgsql # Driver PostgreSQL untuk Laravel
+      # Mengambil detail koneksi dari service database yang kita definisikan di atas
+      - key: DB_HOST
         fromDatabase:
-          name: portfolio-db # Harus sama dengan nama service database di bawah
-          property: connectionString # Ini akan mengambil seluruh URL koneksi database
-      
-  # 2. Database Service
-  - type: psql           # Tipe database: PostgreSQL
-    name: portfolio-db   # Beri nama database Anda
-    plan: free           # Paket gratis
+          name: portfolio-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: portfolio-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: portfolio-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: portfolio-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: portfolio-db
+          property: password
