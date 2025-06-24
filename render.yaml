@@ -1,0 +1,37 @@
+# Blueprint untuk deploy aplikasi Laravel di Render
+services:
+  # 1. Web Service untuk Aplikasi Laravel
+  - type: web
+    name: portfolio-web   # Anda bisa ganti nama ini
+    env: php              # Tentukan environment sebagai PHP
+    plan: free            # Menggunakan paket gratis
+    
+    # Perintah yang dijalankan saat proses build
+    buildCommand: |
+      composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+      npm install
+      npm run build
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+      php artisan storage:link
+      php artisan migrate --force
+
+    # Perintah untuk menjalankan aplikasi
+    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+
+    # Environment Variables
+    envVars:
+      - key: APP_URL # Ganti dengan URL Anda setelah deploy pertama berhasil
+        value: https://portfolio-web.onrender.com 
+      - key: APP_KEY
+        generateValue: true # Biarkan Render yang membuat APP_KEY baru yang aman
+      - key: DB_CONNECTION
+        fromDatabase:
+          name: portfolio-db # Harus sama dengan nama service database di bawah
+          property: connectionString # Ini akan mengambil seluruh URL koneksi database
+      
+  # 2. Database Service
+  - type: psql           # Tipe database: PostgreSQL
+    name: portfolio-db   # Beri nama database Anda
+    plan: free           # Paket gratis
