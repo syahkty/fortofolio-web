@@ -1,20 +1,19 @@
-# Blueprint versi 2 - Struktur yang Benar untuk Laravel + Database
+# Blueprint versi 3 - Final & Corrected
 databases:
-  # Mendefinisikan service database kita terlebih dahulu
-  - name: portfolio-db       # Nama database Anda
-    databaseName: portfolio  # Nama database spesifik yang akan dibuat
-    user: portfolio_user     # Username untuk database
-    plan: free               # Menggunakan paket gratis
-    postgresMajorVersion: 15 # Menggunakan PostgreSQL versi 15
+  # Definisi database (ini sudah benar)
+  - name: portfolio-db
+    databaseName: portfolio
+    user: portfolio_user
+    plan: free
+    postgresMajorVersion: 15
 
 services:
-  # Mendefinisikan web service untuk aplikasi Laravel
+  # Definisi web service Laravel
   - type: web
-    name: portfolio-web      # Nama web service Anda
-    env: php                 # Environment PHP
-    plan: free               # Paket gratis
+    name: portfolio-web
+    runtime: php # <-- DIUBAH: dari 'env' menjadi 'runtime'
+    plan: free
     
-    # Perintah yang dijalankan saat build
     buildCommand: |
       composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
       npm install
@@ -25,22 +24,15 @@ services:
       php artisan storage:link
       php artisan migrate --force
 
-    # Perintah untuk menjalankan aplikasi
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
 
     # Environment Variables
     envVars:
-      - key: APP_URL
-        # Render akan memberikan URL-nya secara otomatis
-        fromService:
-          type: web
-          name: portfolio-web
-          property: url
+      # DIHAPUS: Blok untuk APP_URL kita hapus dari sini, akan di-set manual
       - key: APP_KEY
-        generateValue: true # Biarkan Render membuat APP_KEY baru yang aman
+        generateValue: true
       - key: DB_CONNECTION
-        value: pgsql # Driver PostgreSQL untuk Laravel
-      # Mengambil detail koneksi dari service database yang kita definisikan di atas
+        value: pgsql
       - key: DB_HOST
         fromDatabase:
           name: portfolio-db
