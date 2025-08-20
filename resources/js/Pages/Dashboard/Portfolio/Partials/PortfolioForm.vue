@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { defineProps, defineEmits } from 'vue';
+import { watch } from 'vue';
 
 // 1. Definisikan props 'modelValue' dan event 'update:modelValue'
 // Ini adalah syarat wajib agar v-model berfungsi.
@@ -59,9 +59,6 @@ watch(form, (newFormState) => {
         <div>
             <label for="live_url" class="block text-sm font-medium text-slate-300">URL Live Demo</label>
             <input v-model="modelValue.live_url" type="url" id="live_url" class="mt-1 block w-full bg-slate-800 border-slate-600 rounded-md shadow-sm text-white focus:ring-neon-cyan focus:border-neon-cyan">\
-            <div v-if="form.errors.live_url" class="text-red-500 text-sm mt-1">
-                {{ form.errors.live_url }}
-            </div>
         </div>
         <div>
             <label for="source_code_url" class="block text-sm font-medium text-slate-300">URL Source Code</label>
