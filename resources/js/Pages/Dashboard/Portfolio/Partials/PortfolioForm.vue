@@ -2,13 +2,41 @@
 import { useForm } from '@inertiajs/vue3';
 import { defineProps, defineEmits } from 'vue';
 
+// 1. Definisikan props 'modelValue' dan event 'update:modelValue'
+// Ini adalah syarat wajib agar v-model berfungsi.
 const props = defineProps({
-    modelValue: Object, // Form object from useForm
+    modelValue: {
+        type: Object,
+        required: true,
+    },
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-const form = useForm(props.modelValue);
+// 2. Buat form lokal HANYA untuk digunakan di dalam komponen ini.
+// Kita tidak langsung menggunakan props.modelValue di template.
+const form = useForm({ ...props.modelValue });
+
+// 3. Sinkronisasi DUA ARAH menggunakan 'watch'
+
+// ARAH 1: Jika data di INDUK berubah, perbarui form LOKAL di anak.
+// Ini penting jika form di-reset atau diubah dari induk.
+watch(() => props.modelValue, (newValue) => {
+    form.defaults(newValue);
+    form.reset();
+    // Salin juga errors jika ada
+    form.errors = newValue.errors; 
+}, {
+    deep: true // 'deep' diperlukan untuk mengawasi semua properti di dalam objek
+});
+
+// ARAH 2: Jika form LOKAL berubah (misalnya pengguna mengetik),
+// beritahu INDUK tentang perubahan tersebut melalui event emit.
+watch(form, (newFormState) => {
+    emit('update:modelValue', newFormState);
+}, {
+    deep: true
+});
 </script>
 
 <template>
@@ -30,7 +58,10 @@ const form = useForm(props.modelValue);
         </div>
         <div>
             <label for="live_url" class="block text-sm font-medium text-slate-300">URL Live Demo</label>
-            <input v-model="modelValue.live_url" type="url" id="live_url" class="mt-1 block w-full bg-slate-800 border-slate-600 rounded-md shadow-sm text-white focus:ring-neon-cyan focus:border-neon-cyan">
+            <input v-model="modelValue.live_url" type="url" id="live_url" class="mt-1 block w-full bg-slate-800 border-slate-600 rounded-md shadow-sm text-white focus:ring-neon-cyan focus:border-neon-cyan">\
+            <div v-if="form.errors.live_url" class="text-red-500 text-sm mt-1">
+                {{ form.errors.live_url }}
+            </div>
         </div>
         <div>
             <label for="source_code_url" class="block text-sm font-medium text-slate-300">URL Source Code</label>
