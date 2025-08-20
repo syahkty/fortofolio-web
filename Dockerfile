@@ -32,8 +32,9 @@ FROM php:8.2-fpm-alpine
 
 WORKDIR /var/www/html
 
-RUN apk add --no-cache libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev \
-    && docker-php-ext-install pdo pdo_mysql zip pcntl exif gd
+# Ganti dengan baris baru ini
+RUN apk add --no-cache libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev postgresql-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip pcntl exif gd
 
 COPY . /var/www/html
 
