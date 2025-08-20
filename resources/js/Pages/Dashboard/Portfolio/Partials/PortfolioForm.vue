@@ -58,7 +58,10 @@ watch(form, (newFormState) => {
         </div>
         <div>
             <label for="live_url" class="block text-sm font-medium text-slate-300">URL Live Demo</label>
-            <input v-model="modelValue.live_url" type="url" id="live_url" class="mt-1 block w-full bg-slate-800 border-slate-600 rounded-md shadow-sm text-white focus:ring-neon-cyan focus:border-neon-cyan">\
+            <input v-model="modelValue.live_url" type="url" id="live_url" class="mt-1 block w-full bg-slate-800 border-slate-600 rounded-md shadow-sm text-white focus:ring-neon-cyan focus:border-neon-cyan">
+            <div v-if="form.errors.live_url" class="text-red-500 text-sm mt-1">
+                {{ form.errors.live_url }}
+            </div>
         </div>
         <div>
             <label for="source_code_url" class="block text-sm font-medium text-slate-300">URL Source Code</label>
