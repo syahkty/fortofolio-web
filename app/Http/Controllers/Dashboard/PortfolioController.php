@@ -44,6 +44,7 @@ class PortfolioController extends Controller
 
             // Ambil screenshot dari URL dan simpan ke path yang ditentukan
             Browsershot::url($validated['live_url'])
+                ->ignoreHttpsErrors()
                 ->windowSize(1200, 800) // Atur ukuran jendela browser virtual
                 ->waitUntilNetworkIdle() // Tunggu sampai semua resource (gambar, script) selesai dimuat
                 ->save($fullStoragePath);
