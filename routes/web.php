@@ -38,12 +38,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('/dashboard/portfolios', PortfolioController::class);
-    Route::resource('/dashboard/posts', PostController::class);
+    
+    // Hapus '/dashboard/' dari sini karena sudah ditangani oleh prefix
+    Route::resource('portfolios', PortfolioController::class);
+    Route::resource('posts', PostController::class);
 });
 
 require __DIR__.'/auth.php';

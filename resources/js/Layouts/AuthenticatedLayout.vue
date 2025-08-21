@@ -31,7 +31,7 @@ const showingNavigationDropdown = ref(false);
                                 <div v-show="showingNavigationDropdown" class="absolute z-50 mt-2 w-48 rounded-md shadow-lg right-0 bg-glass-bg border border-slate-700">
                                     <div class="py-1 rounded-md">
                                         <Link :href="route('home')" class="block w-full px-4 py-2 text-start text-sm leading-5 text-slate-300 hover:bg-slate-700/50 focus:outline-none focus:bg-slate-700 transition duration-150 ease-in-out">Home</Link>
-                                        <Link :href="route('profile.edit')" class="block w-full px-4 py-2 text-start text-sm leading-5 text-slate-300 hover:bg-slate-700/50 focus:outline-none focus:bg-slate-700 transition duration-150 ease-in-out">Profile</Link>
+                                        <Link :href="route('dashboard.profile.edit')" class="block w-full px-4 py-2 text-start text-sm leading-5 text-slate-300 hover:bg-slate-700/50 focus:outline-none focus:bg-slate-700 transition duration-150 ease-in-out">Profile</Link>
                                         <Link :href="route('logout')" method="post" as="button" class="block w-full px-4 py-2 text-start text-sm leading-5 text-slate-300 hover:bg-slate-700/50 focus:outline-none focus:bg-slate-700 transition duration-150 ease-in-out">
                                             Log Out
                                         </Link>
