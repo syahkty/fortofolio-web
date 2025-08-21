@@ -45,18 +45,6 @@ COPY --from=assets /app/public/ /var/www/html/public/
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# ... (baris-baris sebelumnya) ...
-
-# Salin script entrypoint yang sudah kita buat ke dalam image
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-# Pastikan script bisa dieksekusi di dalam container
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Atur entrypoint untuk menjalankan script kita
-ENTRYPOINT ["entrypoint.sh"]
-
 EXPOSE 8000
 
-# Atur command default, yang akan dijalankan oleh "exec $@" di dalam script
-# Ganti CMD lama Anda dengan ini, dalam format exec
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
