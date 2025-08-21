@@ -59,4 +59,4 @@ EXPOSE 8000
 
 # Atur command default, yang akan dijalankan oleh "exec $@" di dalam script
 # Ganti CMD lama Anda dengan ini, dalam format exec
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
