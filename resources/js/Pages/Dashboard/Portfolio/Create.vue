@@ -13,7 +13,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('portfolios.store'));
+    form.post(route('dashboard.portfolios.store'));
 };
 </script>
 

@@ -17,7 +17,7 @@ const successMessage = computed(() => usePage().props.flash?.success); // <-- Ta
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-white leading-tight">Kelola Portofolio</h2>
-                <Link :href="route('portfolios.create')" class="bg-neon-cyan text-dark-bg font-bold py-2 px-4 rounded-lg shadow-neon-sm hover:scale-105 transition-transform">
+                <Link :href="route('dashboard.portfolios.create')" class="bg-neon-cyan text-dark-bg font-bold py-2 px-4 rounded-lg shadow-neon-sm hover:scale-105 transition-transform">
                     Tambah Proyek Baru
                 </Link>
             </div>
@@ -43,8 +43,8 @@ const successMessage = computed(() => usePage().props.flash?.success); // <-- Ta
                                     <img :src="item.image_url" :alt="item.title" class="w-16 h-10 object-cover rounded">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <Link :href="route('portfolios.edit', item.id)" class="text-indigo-400 hover:text-indigo-300 mr-4">Edit</Link>
-                                    <Link :href="route('portfolios.destroy', item.id)" method="delete" as="button" type="button" class="text-red-500 hover:text-red-400" onclick="return confirm('Apakah Anda yakin ingin menghapus proyek ini?')">Hapus</Link>
+                                    <Link :href="route('dashboard.portfolios.edit', item.id)" class="text-indigo-400 hover:text-indigo-300 mr-4">Edit</Link>
+                                    <Link :href="route('dashboard.portfolios.destroy', item.id)" method="delete" as="button" type="button" class="text-red-500 hover:text-red-400" onclick="return confirm('Apakah Anda yakin ingin menghapus proyek ini?')">Hapus</Link>
                                 </td>
                             </tr>
                         </tbody>

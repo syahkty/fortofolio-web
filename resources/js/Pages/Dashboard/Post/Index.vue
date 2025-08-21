@@ -16,7 +16,7 @@ const successMessage = computed(() => usePage().props.flash?.success);
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-white leading-tight">Kelola Artikel Blog</h2>
-                <Link :href="route('posts.create')" class="bg-neon-cyan text-dark-bg font-bold py-2 px-4 rounded-lg shadow-neon-sm hover:scale-105 transition-transform">
+                <Link :href="route('dashboard.posts.create')" class="bg-neon-cyan text-dark-bg font-bold py-2 px-4 rounded-lg shadow-neon-sm hover:scale-105 transition-transform">
                     Tulis Artikel Baru
                 </Link>
             </div>
@@ -47,8 +47,8 @@ const successMessage = computed(() => usePage().props.flash?.success);
                                     {{ new Date(post.published_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <Link :href="route('posts.edit', post.slug)" class="text-indigo-400 hover:text-indigo-300 mr-4">Edit</Link>
-                                    <Link :href="route('posts.destroy', post.slug)" method="delete" as="button" type="button" class="text-red-500 hover:text-red-400" onclick="return confirm('Apakah Anda yakin ingin menghapus artikel ini?')">Hapus</Link>
+                                    <Link :href="route('dashboard.posts.edit', post.slug)" class="text-indigo-400 hover:text-indigo-300 mr-4">Edit</Link>
+                                    <Link :href="route('dashboard.posts.destroy', post.slug)" method="delete" as="button" type="button" class="text-red-500 hover:text-red-400" onclick="return confirm('Apakah Anda yakin ingin menghapus artikel ini?')">Hapus</Link>
                                 </td>
                             </tr>
                         </tbody>

@@ -19,7 +19,7 @@ const form = useForm({
 
 const submit = () => {
     // Kirim sebagai POST karena form berisi file
-    form.post(route('portfolios.update', props.portfolio.id));
+    form.post(route('dashboard.portfolios.update', props.portfolio.id));
 };
 </script>
 

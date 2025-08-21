@@ -22,12 +22,12 @@ import { Head, Link } from '@inertiajs/vue3';
                 </div>
 
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Link :href="route('portfolios.index')" class="bg-glass-bg border border-slate-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-neon-cyan/50 hover:-translate-y-2 transition-all duration-300">
+                    <Link :href="route('dashboard.portfolios.index')" class="bg-glass-bg border border-slate-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-neon-cyan/50 hover:-translate-y-2 transition-all duration-300">
                         <h3 class="text-2xl font-bold text-white">Kelola Portofolio</h3>
                         <p class="mt-2 text-slate-400">Tambah, edit, atau hapus proyek portofolio Anda.</p>
                     </Link>
 
-                    <Link :href="route('posts.index')" class="bg-glass-bg border border-slate-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-neon-cyan/50 hover:-translate-y-2 transition-all duration-300">
+                    <Link :href="route('dashboard.posts.index')" class="bg-glass-bg border border-slate-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-neon-cyan/50 hover:-translate-y-2 transition-all duration-300">
                         <h3 class="text-2xl font-bold text-white">Kelola Blog</h3>
                         <p class="mt-2 text-slate-400">Tulis, publikasikan, dan kelola artikel blog Anda.</p>
                     </Link>

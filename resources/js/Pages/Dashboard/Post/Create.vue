@@ -11,7 +11,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('posts.store'));
+    form.post(route('dashboard.posts.store'));
 };
 </script>
 

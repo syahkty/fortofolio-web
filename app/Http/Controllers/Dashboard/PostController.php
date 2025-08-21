@@ -56,7 +56,7 @@ class PostController extends Controller
         Post::create($validated);
 
         // DIUBAH: Redirect ke route 'posts.index' dengan pesan yang sesuai
-        return redirect()->route('posts.index')->with('success', 'Artikel berhasil ditambahkan.');
+        return redirect()->route('dashboard.posts.index')->with('success', 'Artikel berhasil ditambahkan.');
     }
 
     /**
@@ -93,7 +93,7 @@ class PostController extends Controller
         $validated['slug'] = Str::slug($request->title);
         $post->update($validated);
 
-        return redirect()->route('posts.index')->with('success', 'Artikel berhasil diperbarui.');
+        return redirect()->route('dashboard.posts.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 
     /**
@@ -107,7 +107,7 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('posts.index')->with('success', 'Artikel berhasil dihapus.');
+        return redirect()->route('dashboard.posts.index')->with('success', 'Artikel berhasil dihapus.');
     }
     
     public function show(Post $post)

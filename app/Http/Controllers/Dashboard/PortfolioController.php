@@ -88,7 +88,7 @@ try {
     $validated['published_at'] = now();
     Portfolio::create($validated);
 
-    return redirect()->route('portfolios.index')->with('success', 'Proyek berhasil ditambahkan.');
+    return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil ditambahkan.');
 }
 
     public function edit(Portfolio $portfolio)
@@ -122,7 +122,7 @@ try {
         $validated['slug'] = Str::slug($request->title);
         $portfolio->update($validated);
 
-        return redirect()->route('portfolios.index')->with('success', 'Proyek berhasil diperbarui.');
+        return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil diperbarui.');
     }
 
     public function destroy(Portfolio $portfolio)
@@ -134,6 +134,6 @@ try {
 
         $portfolio->delete();
 
-        return redirect()->route('portfolios.index')->with('success', 'Proyek berhasil dihapus.');
+        return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil dihapus.');
     }
 }
