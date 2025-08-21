@@ -38,15 +38,12 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // 'prefix' akan membuat URL menjadi /dashboard/portfolios
-    // 'name' akan membuat nama rute menjadi dashboard.portfolios.index, dll.
-    Route::resource('portfolios', PortfolioController::class);
-    Route::resource('posts', PostController::class);
+    Route::resource('/dashboard/portfolios', PortfolioController::class);
+    Route::resource('/dashboard/posts', PostController::class);
 });
 
 require __DIR__.'/auth.php';
