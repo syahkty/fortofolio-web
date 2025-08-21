@@ -66,14 +66,14 @@ const submit = () => {
                     Log in
                 </PrimaryButton>
             </div>
-             <div class="text-center mt-6">
+             <!-- <div class="text-center mt-6">
                  <p class="text-sm text-slate-400">
                      Belum punya akun?
                      <Link :href="route('register')" class="font-medium text-neon-cyan hover:underline">
                          Daftar di sini
                      </Link>
                  </p>
-             </div>
+             </div> -->
         </form>
     </GuestLayout>
 </template>
