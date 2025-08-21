@@ -27,7 +27,7 @@ const submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-glass-bg border border-slate-700 rounded-lg p-6">
                     <form @submit.prevent="submit">
-                        <PortfolioForm v-model="form" />
+                        <PortfolioForm :form="form" />
                         <div class="mt-6 flex justify-end">
                             <button type="submit" :disabled="form.processing" class="bg-neon-cyan text-dark-bg font-bold py-2 px-4 rounded-lg shadow-neon-sm disabled:opacity-50">
                                 Simpan
