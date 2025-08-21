@@ -100,7 +100,7 @@ function toggleNeon() {
                 <h2
                     class="text-3xl font-bold text-center text-white mb-2"
                     :class="{
-                            'neon-text neon-flicker': isNeonOn,
+                            'neon-text': isNeonOn,
                             'text-white': !isNeonOn,
                         }"
                 >
@@ -197,7 +197,7 @@ function toggleNeon() {
                 <h2
                     class="text-3xl font-bold text-center text-white mb-2"
                     :class="{
-                            'neon-text neon-flicker': isNeonOn,
+                            'neon-text': isNeonOn,
                             'text-white': !isNeonOn,
                         }"
                 >
@@ -251,7 +251,7 @@ function toggleNeon() {
                 <h2
                     class="text-3xl font-bold text-center text-white mb-2"
                     :class="{
-                            'neon-text neon-flicker': isNeonOn,
+                            'neon-text': isNeonOn,
                             'text-white': !isNeonOn,
                         }"
                 >
