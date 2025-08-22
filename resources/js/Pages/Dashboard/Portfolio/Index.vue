@@ -40,7 +40,7 @@ const successMessage = computed(() => usePage().props.flash?.success); // <-- Ta
                             <tr v-for="item in portfolios" :key="item.id">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{ item.title }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
-                                    <img :src="item.image_url" :alt="item.title" class="w-16 h-10 object-cover rounded">
+                                    <img :src="item.image" :alt="item.title" class="w-16 h-10 object-cover rounded">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <Link :href="route('dashboard.portfolios.edit', item.id)" class="text-indigo-400 hover:text-indigo-300 mr-4">Edit</Link>

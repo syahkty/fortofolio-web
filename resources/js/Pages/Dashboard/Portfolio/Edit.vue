@@ -37,7 +37,7 @@ const submit = () => {
 
                         <div class="mt-4">
                             <p class="text-sm text-slate-400">Gambar Saat Ini:</p>
-                            <img v-if="portfolio.image_url" :src="portfolio.image_url" class="w-32 h-auto rounded mt-2">
+                            <img v-if="portfolio.image" :src="portfolio.image" class="w-32 h-auto rounded mt-2">
                             <p v-else class="text-sm text-slate-500">Tidak ada gambar.</p>
                         </div>
                         <div class="mt-6 flex justify-end">

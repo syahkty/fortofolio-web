@@ -216,7 +216,7 @@ function toggleNeon() {
                         class="bg-glass-bg border border-slate-700 rounded-lg overflow-hidden group"
                     >
                         <img
-                            :src="item.image_url"
+                            :src="item.image"
                             :alt="item.title"
                             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                         />

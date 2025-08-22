@@ -10,6 +10,8 @@ use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
 
 class PortfolioController extends Controller
 {
@@ -28,7 +30,8 @@ class PortfolioController extends Controller
     // app/Http/Controllers/PortfolioController.php
 public function store(Request $request)
 {
-    // ... (Bagian validasi tetap sama) ...
+    // Pastikan Anda sudah menghapus semua kode debug dd() dan config([...])
+    
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'required|string',
@@ -37,59 +40,60 @@ public function store(Request $request)
         'source_code_url' => 'nullable|url',
     ]);
 
-    // 2. Logika Screenshot diubah menggunakan API ScreenshotOne
-    // app/Http/Controllers/Dashboard/PortfolioController.php
+    try {
+        Configuration::instance([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_KEY'),
+                'api_secret' => env('CLOUDINARY_SECRET')
+            ],
+            'url' => [
+                'secure' => true
+            ]
+        ]);
+        $apiKey = env('SCREENSHOTONE_API_KEY');
+        $targetUrl = $validated['live_url'];
 
-// ...
+        $options = [
+            'access_key' => $apiKey,
+            'url' => $targetUrl,
+            'viewport_width' => 1200,
+            'viewport_height' => 800,
+            'format' => 'png',
+            'delay' => 3,
+        ];
 
-try {
-    $apiKey = env('SCREENSHOTONE_API_KEY');
-    
-    // PERBAIKAN 1: Hapus urlencode() dari sini.
-    // Biarkan http_build_query yang menanganinya.
-    $targetUrl = $validated['live_url']; 
+        $apiUrl = "https://api.screenshotone.com/take?" . http_build_query($options);
+        $response = Http::get($apiUrl);
 
-    // Siapkan parameter untuk ScreenshotOne
-    $options = [
-        'access_key' => $apiKey,
-        'url' => $targetUrl, // Sekarang menggunakan URL yang belum di-encode
-        'viewport_width' => 1200,
-        'viewport_height' => 800,
-        'format' => 'png',
-        'delay' => 3,
-        // PERBAIKAN 2: Hapus baris 'response_type' => 'body'
-    ];
+        if ($response->successful()) {
+            // 2. Buat objek UploadApi dan panggil method upload
+            $uploadApiResponse = (new UploadApi())->upload(
+                'data:image/png;base64,' . base64_encode($response->body()),
+                [
+                    'folder' => 'portfolio_images',
+                    'public_id' => 'screenshot-' . Str::slug($validated['title']) . '-' . Str::random(5),
+                ]
+            );
 
-    // Buat URL API dengan parameter
-    $apiUrl = "https://api.screenshotone.com/take?" . http_build_query($options);
+            // 3. Ambil URL aman dari hasil respons
+            $validated['image'] = $uploadApiResponse['secure_url'];
 
-    // Lakukan panggilan HTTP GET ke API
-    $response = Http::get($apiUrl);
-    
-    if ($response->successful()) {
-        $imageName = 'screenshot-' . Str::random(10) . '.png';
-        $imagePath = 'portfolio_images/' . $imageName;
+        } else {
+            throw new \Exception('API ScreenshotOne gagal merespons. Status: ' . $response->status());
+        }
 
-        Storage::disk('public')->put($imagePath, $response->body());
-
-        $validated['image'] = $imagePath;
-    } else {
-        // Jika API gagal, kita bisa lempar exception lagi atau dd() untuk debug
-        throw new \Exception('API ScreenshotOne gagal merespons. Status: ' . $response->status());
+    } catch (\Exception $e) {
+        return back()->withInput()->withErrors(['live_url' => 'Gagal mengambil screenshot: ' . $e->getMessage()]);
     }
 
-} catch (\Exception $e) {
-    return back()->withInput()->withErrors(['live_url' => 'Gagal mengambil screenshot. Pastikan URL dapat diakses oleh publik.']);
-}
-
-// ...
-
-    // 3. Simpan data ke database (Model akan menangani slug)
     $validated['published_at'] = now();
     Portfolio::create($validated);
 
     return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil ditambahkan.');
 }
+
+
 
     public function edit(Portfolio $portfolio)
     {
