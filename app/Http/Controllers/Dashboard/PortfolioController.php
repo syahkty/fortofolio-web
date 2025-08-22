@@ -178,14 +178,46 @@ public function update(Request $request, Portfolio $portfolio)
 }
 
     public function destroy(Portfolio $portfolio)
-    {
-        // Hapus gambar dari storage
-        if ($portfolio->image) {
-            Storage::disk('public')->delete($portfolio->image);
+{
+    // Cek apakah ada URL gambar yang tersimpan
+    if ($portfolio->image) {
+        try {
+            // ==========================================================
+            // KONFIGURASI MANUAL UNTUK MENGHINDARI ERROR LOKAL
+            // ==========================================================
+            Configuration::instance([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_KEY'),
+                    'api_secret' => env('CLOUDINARY_SECRET')
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+            // ==========================================================
+
+            // 1. Ekstrak 'public_id' dari URL gambar Cloudinary
+            // Contoh URL: https://res.cloudinary.com/.../v12345/portfolio_images/screenshot-abc.png
+            // Public ID: portfolio_images/screenshot-abc
+            preg_match('/\/v\d+\/(.*)\.\w+$/', $portfolio->image, $matches);
+
+            if (isset($matches[1])) {
+                $publicId = $matches[1];
+
+                // 2. Hapus gambar dari Cloudinary menggunakan public_id
+                (new UploadApi())->destroy($publicId);
+            }
+
+        } catch (\Exception $e) {
+            // Jika gagal menghapus dari Cloudinary, catat errornya tapi proses tetap lanjut
+            \Log::error('Gagal menghapus gambar dari Cloudinary: ' . $e->getMessage());
         }
-
-        $portfolio->delete();
-
-        return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil dihapus.');
     }
+
+    // 3. Hapus data portofolio dari database
+    $portfolio->delete();
+
+    return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil dihapus.');
+}
 }
