@@ -103,31 +103,69 @@ public function store(Request $request)
     }
 
     public function update(Request $request, Portfolio $portfolio)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'technologies' => 'required|string',
-            'live_url' => 'nullable|url',
-            'source_code_url' => 'nullable|url',
-            'image' => 'nullable|image|max:2048', // Image tidak wajib diisi saat update
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'technologies' => 'required|string',
+        'live_url' => 'required|url',
+        'source_code_url' => 'nullable|url',
+        // Kita tidak lagi memvalidasi 'image' dari form
+    ]);
 
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama
-            if ($portfolio->image) {
-                Storage::disk('public')->delete($portfolio->image);
+    // Cek apakah URL demo diubah. Jika ya, buat screenshot baru.
+    if ($request->live_url !== $portfolio->live_url) {
+        try {
+            // 1. Panggil API ScreenshotOne
+            $apiKey = env('SCREENSHOTONE_API_KEY');
+            $targetUrl = $validated['live_url'];
+            $options = [
+                'access_key' => $apiKey,
+                'url' => $targetUrl,
+                'viewport_width' => 1200,
+                'viewport_height' => 800,
+                'format' => 'png',
+                'delay' => 3,
+            ];
+            $apiUrl = "https://api.screenshotone.com/take?" . http_build_query($options);
+            $response = Http::get($apiUrl);
+
+            if ($response->successful()) {
+                // Hapus gambar lama dari Cloudinary jika ada
+                if ($portfolio->image) {
+                    // Ekstrak public_id dari URL gambar lama
+                    preg_match('/\/v\d+\/(.*)\.\w+$/', $portfolio->image, $matches);
+                    if (isset($matches[1])) {
+                        (new UploadApi())->destroy($matches[1]);
+                    }
+                }
+
+                // Upload gambar baru ke Cloudinary
+                $uploadApiResponse = (new UploadApi())->upload(
+                    'data:image/png;base64,' . base64_encode($response->body()),
+                    [
+                        'folder' => 'portfolio_images',
+                        'public_id' => 'screenshot-' . Str::slug($validated['title']) . '-' . Str::random(5),
+                    ]
+                );
+
+                // Masukkan URL gambar baru ke data yang akan diupdate
+                $validated['image'] = $uploadApiResponse['secure_url'];
+
+            } else {
+                throw new \Exception('API ScreenshotOne gagal merespons. Status: ' . $response->status());
             }
-            // Simpan gambar baru
-            $path = $request->file('image')->store('portfolio_images', 'public');
-            $validated['image'] = $path;
+
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['live_url' => 'Gagal memperbarui screenshot: ' . $e->getMessage()]);
         }
-
-        $validated['slug'] = Str::slug($request->title);
-        $portfolio->update($validated);
-
-        return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil diperbarui.');
     }
+
+    // Update data di database
+    $portfolio->update($validated);
+
+    return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil diperbarui.');
+}
 
     public function destroy(Portfolio $portfolio)
     {
