@@ -102,7 +102,7 @@ public function store(Request $request)
         ]);
     }
 
-    public function update(Request $request, Portfolio $portfolio)
+public function update(Request $request, Portfolio $portfolio)
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
@@ -110,13 +110,26 @@ public function store(Request $request)
         'technologies' => 'required|string',
         'live_url' => 'required|url',
         'source_code_url' => 'nullable|url',
-        // Kita tidak lagi memvalidasi 'image' dari form
     ]);
 
-    // Cek apakah URL demo diubah. Jika ya, buat screenshot baru.
     if ($request->live_url !== $portfolio->live_url) {
         try {
-            // 1. Panggil API ScreenshotOne
+            // ==========================================================
+            // TAMBAHKAN BLOK KONFIGURASI MANUAL DI SINI
+            // ==========================================================
+            Configuration::instance([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_KEY'),
+                    'api_secret' => env('CLOUDINARY_SECRET')
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+            // ==========================================================
+
+            // Panggil API ScreenshotOne
             $apiKey = env('SCREENSHOTONE_API_KEY');
             $targetUrl = $validated['live_url'];
             $options = [
@@ -131,16 +144,15 @@ public function store(Request $request)
             $response = Http::get($apiUrl);
 
             if ($response->successful()) {
-                // Hapus gambar lama dari Cloudinary jika ada
+                // Hapus gambar lama dari Cloudinary
                 if ($portfolio->image) {
-                    // Ekstrak public_id dari URL gambar lama
                     preg_match('/\/v\d+\/(.*)\.\w+$/', $portfolio->image, $matches);
                     if (isset($matches[1])) {
                         (new UploadApi())->destroy($matches[1]);
                     }
                 }
 
-                // Upload gambar baru ke Cloudinary
+                // Upload gambar baru
                 $uploadApiResponse = (new UploadApi())->upload(
                     'data:image/png;base64,' . base64_encode($response->body()),
                     [
@@ -148,8 +160,7 @@ public function store(Request $request)
                         'public_id' => 'screenshot-' . Str::slug($validated['title']) . '-' . Str::random(5),
                     ]
                 );
-
-                // Masukkan URL gambar baru ke data yang akan diupdate
+                
                 $validated['image'] = $uploadApiResponse['secure_url'];
 
             } else {
@@ -161,7 +172,6 @@ public function store(Request $request)
         }
     }
 
-    // Update data di database
     $portfolio->update($validated);
 
     return redirect()->route('dashboard.portfolios.index')->with('success', 'Proyek berhasil diperbarui.');
